@@ -77,7 +77,6 @@ static int mdss_dsi_regulator_init(struct platform_device *pdev)
 			}
 		}
 	}
-
 	return rc;
 }
 
@@ -1350,6 +1349,11 @@ static int mdss_dsi_event_handler(struct mdss_panel_data *pdata,
 	case MDSS_EVENT_SET_CABC:
 		if (ctrl_pdata->set_cabc)
 			rc = ctrl_pdata->set_cabc(ctrl_pdata,
+					(int)(unsigned long)arg);
+		break;
+	case MDSS_EVENT_ENABLE_HBM:
+		if (ctrl_pdata->set_hbm)
+			rc = ctrl_pdata->set_hbm(ctrl_pdata,
 					(int)(unsigned long)arg);
 		break;
 	default:

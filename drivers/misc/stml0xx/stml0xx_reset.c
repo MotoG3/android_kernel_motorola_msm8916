@@ -47,11 +47,18 @@ void stml0xx_reset(struct stml0xx_platform_data *pdata)
 {
 	dev_err(&stml0xx_misc_data->spi->dev, "stml0xx_reset");
 	stml0xx_g_booted = 0;
+
+	if (pdata->reset_hw_type != 0)
+		gpio_direction_output(pdata->gpio_reset, 1);
+
 	msleep(stml0xx_spi_retry_delay);
 	gpio_set_value(pdata->gpio_reset, 0);
 	msleep(stml0xx_spi_retry_delay);
 	gpio_set_value(pdata->gpio_reset, 1);
 	msleep(STML0XX_RESET_DELAY);
+
+	if (pdata->reset_hw_type != 0)
+		gpio_direction_input(pdata->gpio_reset);
 }
 
 void stml0xx_initialize_work_func(struct work_struct *work)
@@ -179,6 +186,15 @@ void stml0xx_initialize_work_func(struct work_struct *work)
 	if (err < 0) {
 		dev_err(&ps_stml0xx->spi->dev,
 			"unable to write proximity settings %d", err);
+		ret_err = err;
+	}
+
+	buf[0] = pdata->dsp_iface_enable & 0xff;
+	err = stml0xx_spi_send_write_reg_reset(DSP_CONTROL, buf,
+		1, RESET_NOT_ALLOWED);
+	if (err < 0) {
+		dev_err(&ps_stml0xx->spi->dev,
+			"Unable to write dsp interface enable");
 		ret_err = err;
 	}
 
