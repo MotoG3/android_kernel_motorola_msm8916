@@ -1,12 +1,12 @@
 Build tools required:
-- Linaro GCC
-- gcc (for your host)
+- Linaro GCC for 32-bit ARM
+- GCC for your host
 
 How to build:
 export ARCH=arm
 export SUBARCH=arm
 export CROSS_COMPILE=arm-linux-gnueabihf-
-export VARIANT=lte
+export VARIANT=gsm
 make mrproper
 make msm8916-squid_defconfig
 make -j5
