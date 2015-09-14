@@ -38,6 +38,8 @@ export LC_COLLATE LC_NUMERIC
 # descending is started. They are now explicitly listed as the
 # prepare rule.
 
+TOP := $(dir $(lastword $(MAKEFILE_LIST)))
+
 # To put more focus on warnings, be less verbose as default
 # Use 'make V=1' to see the full commands
 
@@ -1450,6 +1452,11 @@ endif
 clean := -f $(if $(KBUILD_SRC),$(srctree)/)scripts/Makefile.clean obj
 
 endif	# skip-makefile
+
+# dt image builder
+ifeq "$(TOP)" "./"
+include bootimage.mk
+endif
 
 PHONY += FORCE
 FORCE:
